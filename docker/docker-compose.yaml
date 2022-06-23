@@ -1,0 +1,38 @@
+version: '3.9'
+
+services:
+
+  nexus:
+    image: sonatype/nexus3
+    container_name: devops-nexus
+    restart: on-failure
+    #restart: always
+    #ports:
+    #  - 8081:8081
+    #  - '8083:8083'
+    volumes:
+      - "/home/$USER/projects/devops/docker/nexus/volumes/nexus-data/_data:/nexus-data/"
+      - "/home/$USER/projects/devops/docker/nexus/volumes/sonatype-work/_data:/app/sonatype-work"
+    networks:
+      - devops-network
+
+  nginx:
+    build:
+      context: ./nginx
+    container_name: devops-nginx 
+    command: [nginx, '-g', 'daemon off;']
+    restart: on-failure
+    ports:
+      - '444:444'
+      - '445:445'
+      - '446:446'      
+    networks:
+      - devops-network
+    depends_on:
+      - nexus
+
+
+networks:
+  devops-network:
+    driver: bridge
+    name: devops-network
