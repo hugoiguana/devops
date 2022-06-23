@@ -8,3 +8,4 @@
       https://blog.sonatype.com/using-nexus-3-as-your-repository-part-2-npm-packages
       https://blog.sonatype.com/using-nexus-3-as-your-repository-part-3-docker-images   
    ```
+2. For this example configure only docker and maven repositories.
