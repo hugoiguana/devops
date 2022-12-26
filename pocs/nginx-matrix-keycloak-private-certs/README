@@ -1,0 +1,95 @@
+
+# Kind - Cluster k8s:
+kind create cluster --config kind.yml --name nginx-matrix-keycloak
+kind delete cluster --name nginx-matrix-keycloak
+kind get clusters
+kind get nodes
+kubectl get nodes
+docker ps | grep kind
+cat ~/.kube/conf
+
+
+# Docker:
+docker ps | grep nginx-matrix-keycloak
+
+# Kubernetes config:
+kubectl config get-contexts
+kubectl config use-context kind-nginx-matrix-keycloak
+
+
+# Install apps:
+chmod 777 install-apps.sh
+./install-apps.sh
+
+# Steps to install applications:
+kubectl apply -f postgres/configmap.yaml
+kubectl apply -f postgres/pv.yaml
+kubectl apply -f postgres/deployment.yaml
+kubectl apply -f postgres/service.yaml
+
+kubectl apply -f nginx/nginx-config-configmap.yaml
+kubectl apply -f nginx/nginx-certificate-configmap.yaml
+kubectl apply -f nginx/nginx-certificate-key-configmap.yaml
+kubectl apply -f nginx/nginx-certificate-ca-configmap.yaml
+kubectl apply -f deployment.yaml
+kubectl apply -f service.yaml
+
+
+-------------------
+
+kubectl get configmap -n default
+kubectl get configmap | grep postgres
+kubectl describe configmap postgres-config
+kubectl describe configmap nginx-configmap
+
+kubectl get pv
+kubectl get pvc
+
+kubectl get pods -n default
+kubectl logs postgres-5cb8b67d8f-dqnw6 -n default
+
+
+kubectl get services -n default
+
+
+# Delete Pods:
+kubectl delete pod nginx-matrix-keycloak-675498b4d-bwjwr
+
+# Exec in Pods:
+kubectl exec nginx-matrix-keycloak-675498b4d-9p2dz -it bin/bash
+
+
+
+# Curl outsid the cluster:
+curl https://localhost:555/
+curl https://matrix:555/
+curl --cert cert/matrix.crt --key cert/matrix.pem  --cacert cert/matrixCA.pem https://matrix:555/
+curl -v --cert cert/matrix.crt --key cert/matrix.pem  --cacert cert/matrixCA.pem https://matrix:555/
+
+# Curl inside the Nginx container to test certs:
+curl -v -k https://localhost:555/
+curl -v --cert /etc/nginx/certificate.crt --key /etc/nginx/certificate-key.pem  --cacert /etc/nginx/certificate-ca.pem https://localhost:555/
+
+
+# Tests on browsers:
+    # Nginx:
+        https://matrix:555/
+    # Keycloak
+        https://matrix:555/auth
+        User: admin
+        Pass: test123
+    # Matrix_
+        https://matrix:555/_matrix/static
+        https://localhost:555/auth/realms/mdoc/.well-known/openid-configuration
+
+
+# Create certificates:
+openssl genrsa -passout pass:"test" -des3 -out cert/matrixCA.key 2048
+
+openssl req -passin pass:"test" -subj "/C=US/ST=Random/L=Random/O=Global Security/OU=IT Department/CN=Private Certificate" -x509 -new -nodes -key cert/matrixCA.key -sha256 -days 1024 -out cert/matrixCA.pem
+
+openssl req -subj "/C=US/ST=Random/L=Random/O=Global Security/OU=IT Department/CN=matrix,localhost" -new -sha256 -nodes -out cert/matrix.csr -newkey rsa:2048 -keyout cert/matrix.pem
+openssl x509 -req -passin pass:"test" -in cert/matrix.csr -CA cert/matrixCA.pem -CAkey cert/matrixCA.key -CAcreateserial -out cert/matrix.crt -days 500 -sha256 -extfile cert/domains.txt
+
+# Add certificate to Mac OS:
+sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain cert/matrixCA.pem

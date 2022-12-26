@@ -1,0 +1,29 @@
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: matrix-pv-volume
+  labels:
+    type: local
+    app: nginx-matrix-keycloak
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 5Gi
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: "/mnt/data1"
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: matrix-pv-claim
+  labels:
+    app: nginx-matrix-keycloak
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 5Gi

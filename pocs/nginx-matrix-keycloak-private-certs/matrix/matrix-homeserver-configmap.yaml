@@ -1,0 +1,80 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: matrix-homeserver-configmap
+  labels:
+    app: nginx-matrix-keycloak
+data:
+  homeserver.yaml: |
+    oidc_providers:
+     - idp_id: keycloak
+       idp_name: "My KeyCloak server"
+       issuer: "https://localhost:555/auth/realms/mdoc"
+       #issuer: "https://localhost:555/teste"
+       client_id: "synapse"
+       client_secret: "RfqGrsdBu69JF3X2sdivPt2lUkZQpPri"
+       scopes: ["openid", "profile"]
+       user_mapping_provider:
+         config:
+           localpart_template: "{{ user.preferred_username }}"
+           display_name_template: "{{ user.name }}"
+       backchannel_logout_enabled: true # Optional  
+    enable_registration: true
+    enable_registration_without_verification: true
+    registration_shared_secret: "BrAasVLybF4Pct#;2wi3G32KGf_&27sq+dZjej8X_0Ea@8-:b*"
+    federation_verify_certicates: false
+    #federation_certificate_verification_whitelist:
+    modules:
+    server_name: "matrix"
+    pid_file: /data/homeserver.pid
+    presence:
+    listeners:
+      - port: 8008
+        tls: false
+        type: http
+        x_forwarded: true
+        resources:
+          - names: [client, federation]
+            compress: false
+    manhole_settings:
+    limit_remote_rooms:
+    templates:
+    retention:
+    caches:
+      per_cache_factors:
+    database:
+      name: sqlite3
+      args:
+        database: /data/homeserver.db
+    log_config: "/data/matrix.log.config"
+    media_store_path: "/data/media_store"
+    url_preview_accept_language:
+    oembed:
+    #enable_registration: true
+    registration_shared_secret: "BrAasVLybF4Pct#;2wi3G32KGf_&27sq+dZjej8X_0Ea@8-:b*"
+    account_threepid_delegates:
+    metrics_flags:
+    report_stats: true
+    room_prejoin_state:
+    macaroon_secret_key: "v17jL&:UQP^joQ^99SWiCENR;I4Nm&9=e.xCq1+I2o3nZ,10@O"
+    form_secret: "tNF:DfSs^Cl^fTph.bi@hQm,Ct4^+kExKph7NJ@lnCVUf843ck"
+    signing_key_path: "/data/matrix.signing.key"
+    old_signing_keys:
+    trusted_key_servers:
+      - server_name: "matrix.org"
+    saml2_config:
+      sp_config:
+      user_mapping_provider:
+        config:
+    cas_config:
+    sso:
+    password_config:
+      policy:
+    ui_auth:
+    email:
+    push:
+    user_directory:
+    stats:
+    opentracing:
+    redis:
+    background_updates:

@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-matrix-keycloak-deployment
+spec:
+    replicas: 1
+    selector:
+      matchLabels:
+        app: nginx-matrix-keycloak
+        release: nginx-matrix-keycloak
+    template:
+      metadata:
+        labels:
+          app: nginx-matrix-keycloak
+      spec:
+        containers:
+          - name: keycloak
+            image: koolwithk/keycloak-arm:16.0.0
+            imagePullPolicy: IfNotPresent
+            env:
+            - name: DB_VENDOR
+              value: "POSTGRES"
+            - name: DB_ADDR
+              value: "synapsedb"
+            - name: DB_DATABASE
+              value: "mdoc"
+            - name: DB_USER
+              value: "mdoc"
+            - name: DB_PASSWORD
+              value: "test123"
+            - name: KEYCLOAK_USER
+              value: "mdoc"     
+            - name: KEYCLOAK_PASSWORD
+              value: "test123"
+            - name: KEYCLOAK_FRONTEND_URL
+              value: "https://matrix:555/auth/"
+            ports:
+            - name: keycloak
+              containerPort: 8080

@@ -1,0 +1,38 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-certificate-key-configmap
+  labels:
+    app: nginx-matrix-keycloak
+data:
+  certificate-key.pem: |
+    -----BEGIN PRIVATE KEY-----
+    MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDULUl0Hlpqa8cY
+    BC077NhDXlRssKrCbfs+vw23G4MZBNmYgBQAY6pmW57W+1FyWBOQ2oOkh3uSJ4Iv
+    EY2xjKOtV+hglDpw+Mj9qe8y6NgIJOpkzQGP/UQ4Fwdc9Y3NDJo1DoAu6BKCBCfZ
+    hjIB2E1JLhNXBCTJpKPrXgs3R9P8cZJ1L4AN0PSXZM/A0bOQBXfOLcDPjyt9MMfh
+    vcjubkHVwDVAhJGlhUzf8cDRQIcYI8NZus+ehAd9wP004ovsutSK/B9YP8wSRyDj
+    ffjInIijxYRWxap1/XETPZAx0jX5dF9UZbz1msJrfwLm29wA74zw0Hq1/fvv5Aet
+    zYm9FyU/AgMBAAECggEBAMq8fww6GJDJbRKQoxw4Yih1ENxOLsvbRQ+ehJ9q5WhZ
+    jwU9lF8O3Hozn2GyAA/vArsNYG4smrF7mNQaxLZbOOZgMgVefT0HKx3ea1XM0Odv
+    RpyMmqqYCMBDmOCFLTo5iXua4HZxf4XGLMGXjV7f7HE5Wndx2SjnbU1vre3jbzYt
+    HJIU4IsI/BXyNRQzKgY6YMPHlQtUxsTpc7z++A/9h2MvKQVmgHNOVOP4n0Q8+5Tr
+    yfRiSP/7wwJUA9pLSGDcKcEsUGfp45AA6pYoxXtLCOyl0MnS6AMbrrkgElMRiIIN
+    3E1eKLA2q6CWkHTwHk5szcMBELWLXQsMhNCp3GZKRxECgYEA+hiOHH3PrM+Ithwc
+    8eXucJLHhioO8DXOWefAiz1ANwObXuojsuWQ6HVIRFbeYmUZc0zdJMKVe3ms691g
+    7wGzbhePbdSC2x14JWInsT4/ffF+F58nyNmJXBqC1BvORwU0PqDGI2r378Bq7Rug
+    i28AqmVf7qzyKzjrnOTiZo0z2fcCgYEA2S+R2PkCaICEc5Z4alqDg4ihSUpVT3JX
+    WBluj/5dVOodO4ouM/d89DWwzY207Hnwwz5eFsZ5dL35zh23cS7jj8BdvKERoMkI
+    BnHTS2lg79SvdeijYWRyqwq66J3vxdA0T8yvg7OTpP7AquWFEza+bZfxE90TDH48
+    2zf9MK9v/PkCgYEAv0so6AITZ0sWdrTqLtyAlPqwQp7I7lM5kusBC3++LlZD8UWG
+    KMAPJr8Ol7caQoix/s88F3H+hIN9EKw0CJx0cjDzND7oGFFiJLX/RkMmrV6Z49eI
+    xsgdmKVujG74SLpiS8UNyOl425mCL/qBwiUVjUAdMKJ4WTcggNFRmr9GeeECgYAK
+    3c1vTK4pKlz2J44ozBSObTScpSJ1kiP6nXMhszlaOUhzJSvAn95ZnaIV9sQZnNRG
+    AIXWn+GNzL+F54i5Gf56v8Yw3OIz6DsFj4Zh3IjkFwEcZiJeihcOpb/KSbSocg1b
+    /MK/VSnK9JARPOCWoIOQmiyOsN32Hw7ObRO27uAsiQKBgDP+50tD4t0Ua51vIEtY
+    0deMKhrVBAugwc58TCbPnq/AeGrXbuMwrXNcXzLwIqn9R4w9w+iEVkyV22XuBDAn
+    /VNAWD3Qopgdq1snZpsRXnsZqJTTZZKi14F6qKNx6a1WvhD3wimQl9FzoE2+C8ph
+    Gl6CA4GVPfNh5AxT1WuyGQ0d
+    -----END PRIVATE KEY-----
+   

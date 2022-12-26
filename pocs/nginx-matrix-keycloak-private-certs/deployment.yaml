@@ -1,0 +1,155 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-matrix-keycloak
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx-matrix-keycloak
+  template:
+    metadata:
+      labels:
+        app: nginx-matrix-keycloak
+    spec:
+      #securityContext:
+        #runAsUser: 1000
+        #runAsGroup: 3000
+        #fsGroup: 2000
+      containers:
+        - name: nginx
+          image: nginx:alpine
+          imagePullPolicy: IfNotPresent
+          ports:
+          - name: nginx-http
+            containerPort: 80
+          - name: nginx-https
+            containerPort: 555
+            hostPort: 555
+          volumeMounts:
+            - name: nginx-cache-volume
+              mountPath: /var/cache/nginx
+            - name: nginx-config-volume
+              mountPath: /etc/nginx/nginx.conf
+              subPath: nginx.conf
+            - name: nginx-certificate-volume
+              mountPath: /etc/nginx/certificate.crt
+              subPath: certificate.crt
+            - name: nginx-certificate-key-volume
+              mountPath: /etc/nginx/certificate-key.pem
+              subPath: certificate-key.pem
+            - name: nginx-certificate-ca-volume
+              mountPath: /etc/nginx/certificate-ca.pem
+              subPath: certificate-ca.pem
+            - name: nginx-issue-keycloak-volume
+              mountPath: /etc/nginx/html/issuer-keycloak.json
+              subPath: issuer-keycloak.json
+              
+          resources:
+            limits:
+              memory: 200Mi
+            requests:
+              cpu: 100m
+              memory: 200Mi   
+          #livenessProbe:
+            #httpGet:
+              #path: /
+              #port: 80
+            #initialDelaySeconds: 5
+            #periodSeconds: 5
+
+        - name: keycloak
+          image: koolwithk/keycloak-arm:16.0.0
+          imagePullPolicy: IfNotPresent
+          env:
+          - name: DB_VENDOR
+            value: "POSTGRES"
+          - name: DB_ADDR
+            value: "postgres"
+          - name: DB_DATABASE
+            value: "postgresdb"
+          - name: DB_USER
+            value: "admin"
+          - name: DB_PASSWORD
+            value: "test123"
+          - name: KEYCLOAK_USER
+            value: "admin"     
+          - name: KEYCLOAK_PASSWORD
+            value: "test123"
+          - name: KEYCLOAK_FRONTEND_URL
+            value: "https://matrix:555/auth/"
+          ports:
+          - name: keycloak
+            containerPort: 8080
+            hostPort: 8080
+
+        - name: matrix
+          image: matrixdotorg/synapse
+          imagePullPolicy: IfNotPresent
+          #command: [ "sh", "-c", "sleep 84000s" ]
+          #command: [ "sh", "-c", "sleep 60s && apt-get install -y ca-certificates && update-ca-certificates && /start.py" ]
+          command: [ "sh", "-c", "apt-get install -y ca-certificates && update-ca-certificates && /start.py" ]
+          env:
+          - name: SYNAPSE_SERVER_NAME
+            value: "matrix"
+          - name: SYNAPSE_REPORT_STATS
+            value: "yes"
+          - name: SYNAPSE_CONFIG_PATH
+            value: "/data/homeserver.yaml"
+          ports:
+          - name: matrix
+            containerPort: 8008
+            hostPort: 8008
+          volumeMounts:
+            - name: matrix-volume
+              mountPath: /data
+            - name: matrix-homeserver-volume
+              mountPath: /data/homeserver.yaml
+              subPath: homeserver.yaml
+            - name: matrix-log-config-volume
+              mountPath: /data/matrix.log.config
+              subPath: matrix.log.config
+            - name: matrix-signing-key-volume
+              mountPath: /data/matrix.signing.key
+              subPath: matrix.signing.key
+              
+            - name: nginx-certificate-volume
+              mountPath: /usr/local/share/ca-certificates/certificate.crt
+              subPath: certificate.crt
+
+
+      volumes:
+        - name: nginx-cache-volume
+          emptyDir: {}
+        - name: nginx-config-volume
+          configMap:
+            name: nginx-configmap
+        - name: nginx-certificate-volume
+          configMap:
+            name: nginx-certificate-configmap
+        - name: nginx-certificate-key-volume
+          configMap:
+            name: nginx-certificate-key-configmap
+        - name: nginx-certificate-ca-volume
+          configMap:
+            name: nginx-certificate-ca-configmap
+        - name: nginx-issue-keycloak-volume
+          configMap:
+            name: nginx-issue-keycloak-configmap
+            
+
+        - name: matrix-volume
+          emptyDir: {}
+        # - name: matrix-volume
+        #   persistentVolumeClaim:
+        #     claimName: matrix-pv-claim
+        - name: matrix-homeserver-volume
+          configMap:
+            name: matrix-homeserver-configmap
+        - name: matrix-log-config-volume
+          configMap:
+            name: matrix-log-config-configmap
+        - name: matrix-signing-key-volume
+          configMap:
+            name: matrix-signing-key-configmap
+            

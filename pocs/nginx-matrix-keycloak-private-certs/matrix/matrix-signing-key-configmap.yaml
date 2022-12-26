@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: matrix-signing-key-configmap
+  labels:
+    app: nginx-matrix-keycloak
+data:
+  matrix.signing.key: |
+    ed25519 a_EgNL PB5QEMcURcrwHgiMXg4468VszTq7WOGvY7wcoU+yKTA
