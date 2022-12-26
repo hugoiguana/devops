@@ -1,0 +1,59 @@
+
+############### CREATE PRIVATE(SELF SIGNED) CERTIFICATE ###############
+
+# Generate Root Key rootCA.key with 2048
+openssl genrsa -passout pass:"test" -des3 -out cert/customeryCA.key 2048
+
+# Generate Root PEM (rootCA.pem) with 1024 days validity.
+openssl req -passin pass:"test" -subj "/C=US/ST=Random/L=Random/O=Global Security/OU=IT Department/CN=Private Certificate" -x509 -new -nodes -key cert/customeryCA.key -sha256 -days 1024 -out cert/customeryCA.pem
+
+
+# Generate Cert
+openssl req -subj "/C=US/ST=Random/L=Random/O=Global Security/OU=IT Department/CN=customer-y" -new -sha256 -nodes -out cert/customery.csr -newkey rsa:2048 -keyout cert/customery.pem
+openssl x509 -req -passin pass:"test" -in cert/customery.csr -CA cert/customeryCA.pem -CAkey cert/customeryCA.key -CAcreateserial -out cert/customery.crt -days 500 -sha256 -extfile cert/domains.txt
+
+
+############### Add domains to etc/hosts ###############
+echo '127.0.0.1 customerx customery' | sudo tee -a /private/etc/hosts
+sudo cat /etc/hosts
+
+
+############### DOCKER COMPOSE ###############
+docker compose up -d --build
+docker compose down
+docker ps
+
+
+############### TEST WITH CURL ###############
+curl -v -k  https://customer-x:445/
+curl -v --cert customer-x/certs/customerx.crt --key customer-x/certs/customerx.pem  --cacert customer-x/certs/customerxCA.pem  https://customer-x:445/
+curl -v --cert customer-x/certs/customerx.crt --key customer-x/certs/customerx.pem  --cacert customer-x/certs/customerxCA.pem  https://customer-x:445/call-customery
+
+
+curl -v https://customer-y:446/
+curl -v -k https://customer-y:446/
+curl -v --cert customer-y/certs/customery.crt --key customer-x/certs/customery.pem  --cacert customer-x/certs/customeryCA.pem  https://customer-y:446/
+
+
+############### KIND ###############
+kind create cluster --config kind.yml --name private-certs-cluster
+kind delete cluster --name private-certs-cluster
+kind get clusters
+kind get nodes
+kubectl get nodes
+docker ps | grep kind
+cat ~/.kube/conf
+
+
+############### HELM ###############
+helm install nginx-customerx nginx-customerx --namespace default
+helm uninstall nginx-customerx --namespace defaul
+
+
+############### K8s ###############
+kubectl get pods -n default
+kubectl logs nginx-84f966c6ff-bq95h -n default
+
+
+security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain nginx/certs/rootCA.pem
+
