@@ -9,7 +9,7 @@ data:
     oidc_providers:
      - idp_id: keycloak
        idp_name: "My KeyCloak server"
-       issuer: "https://localhost:555/auth/realms/mdoc"
+       issuer: "https://localhost:555/auth/realms/realm1"
        #issuer: "https://localhost:555/teste"
        client_id: "synapse"
        client_secret: "RfqGrsdBu69JF3X2sdivPt2lUkZQpPri"

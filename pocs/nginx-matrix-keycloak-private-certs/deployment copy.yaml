@@ -23,13 +23,13 @@ spec:
             - name: DB_ADDR
               value: "synapsedb"
             - name: DB_DATABASE
-              value: "mdoc"
+              value: "keycloak"
             - name: DB_USER
-              value: "mdoc"
+              value: "keycloak"
             - name: DB_PASSWORD
               value: "test123"
             - name: KEYCLOAK_USER
-              value: "mdoc"     
+              value: "keycloak"     
             - name: KEYCLOAK_PASSWORD
               value: "test123"
             - name: KEYCLOAK_FRONTEND_URL

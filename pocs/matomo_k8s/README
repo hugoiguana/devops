@@ -1,0 +1,27 @@
+
+
+# Generate a Base64 text:
+echo 'test123' | base64 
+
+
+# Kind - Cluster k8s:
+kind create cluster --config kind.yml --name matomo
+kind delete cluster --name matomo
+kind get clusters
+kind get nodes
+kubectl get nodes
+docker ps | grep kind
+cat ~/.kube/conf
+
+
+# Docker:
+docker ps | grep matomo
+
+# Kubernetes config:
+kubectl config get-contexts
+kubectl config use-context kind-matomo
+
+
+# Install apps:
+chmod 777 install-apps.sh
+./install-apps.sh

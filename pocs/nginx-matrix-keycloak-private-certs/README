@@ -80,7 +80,7 @@ curl -v --cert /etc/nginx/certificate.crt --key /etc/nginx/certificate-key.pem  
         Pass: test123
     # Matrix_
         https://matrix:555/_matrix/static
-        https://localhost:555/auth/realms/mdoc/.well-known/openid-configuration
+        https://localhost:555/auth/realms/realm1/.well-known/openid-configuration
 
 
 # Create certificates:
