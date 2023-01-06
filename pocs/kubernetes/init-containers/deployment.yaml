@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: example1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: example1
+  template:
+    metadata:
+      labels:
+        app: example1
+    spec:
+      containers:
+        - name: example1
+          image: busybox:1.28
+          imagePullPolicy: IfNotPresent
+          command: ['sh', '-c', 'echo The app is running! && sleep 3600']
+      initContainers:
+      - name: init-example1
+        image: alpine:3.8
+        env:
+          - name: AVP_VERSION
+            value: "1.7.0"
+        command: [sh, -c]
+        args:
+          - >-
+            echo Install CURL before init the first container. Version=${AVP_VERSION}
+

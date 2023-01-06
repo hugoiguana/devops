@@ -1,0 +1,37 @@
+
+https://kubernetes.io/docs/concepts/workloads/pods/init-containers/
+
+
+# Kind - Cluster k8s:
+kind create cluster --config kind.yml --name init-containers
+kind delete cluster --name init-containers
+kind get clusters
+kind get nodes
+kubectl get nodes
+docker ps | grep kind
+cat ~/.kube/conf
+
+
+# Docker:
+docker ps | grep init-containers
+
+# Kubernetes config:
+kubectl config get-contexts
+kubectl config use-context kind-init-containers
+
+
+# Install apps:
+chmod 777 install-apps.sh
+./install-apps.sh
+
+
+
+# Kubectl commands used:
+kubectl get pods
+delete pod myapp-pod
+kubectl logs myapp-pod -c init-myservice # Inspect the first init container
+kubectl logs myapp-pod -c init-mydb 
+kubectl logs myapp-pod
+kubectl logs -n default $(kubectl get pod -n default -l app=example1 -o jsonpath="{.items[1].metadata.name}")
+kubectl logs example1-8fc94c75c-98n8p
+kubectl logs example1-8fc94c75c-98n8p -c init-example1
