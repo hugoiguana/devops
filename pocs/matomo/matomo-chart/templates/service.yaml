@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{.Release.Name }}
+spec:
+  type: {{.Values.matomo.service.type }}
+  selector:
+      app: {{.Release.Name }}
+  ports:
+    - name: {{.Release.Name }}-http
+      port: {{ .Values.matomo.service.port }}
+      nodePort: {{ .Values.matomo.service.nodePort }}
+      protocol: TCP
+      targetPort: {{ .Values.matomo.service.port }}
+

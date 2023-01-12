@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{.Release.Name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{.Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{.Release.Name }}
+    spec:
+      containers:       
+        - name: {{.Release.Name }}
+          image: {{ .Values.matomo.image }}
+          imagePullPolicy: IfNotPresent
+          ports:
+          - name: matomo-http
+            containerPort: {{ .Values.matomo.service.port }}
+            protocol: TCP
+          env:
+            - name: BITNAMI_DEBUG
+              value: 'false'
+            - name: ALLOW_EMPTY_PASSWORD
+              value: 'no'
+            - name: APACHE_HTTP_PORT_NUMBER
+              value: '{{ .Values.matomo.service.port }}'
+          volumeMounts:
+            - mountPath: /var/www/html
+              name: matomo-data
+          readinessProbe:
+            failureThreshold: 5
+            httpGet:
+              path: /
+              port: {{ .Values.matomo.service.port }}
+              scheme: HTTP
+            initialDelaySeconds: 30
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 1
+          livenessProbe:
+            failureThreshold: 5
+            httpGet:
+              path: /
+              port: {{ .Values.matomo.service.port }}
+              scheme: HTTP
+            initialDelaySeconds: 600
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 5                       
+          resources:
+            requests:
+              cpu: 300m
+              memory: 512Mi
+      volumes:
+{{ toYaml .Values.matomo.volumes | indent 8 }}
+      #volumes:
+      #- name: matomo-data
+      #  persistentVolumeClaim:
+      #    claimName: {{.Release.Name }}

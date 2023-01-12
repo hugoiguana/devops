@@ -1,0 +1,19 @@
+matomo:
+  image: "matomo"
+  dns: "localhost"
+  replicaCount: 1
+  matomoUsername: admin
+  matomoPassword: admin
+  service:
+    #type: ClusterIP
+    type: NodePort
+    port: 80
+    nodePort: 30950
+  volumes:
+  - name: matomo-data
+    emptyDir: {}
+  #- name: matomo-data
+    #persistentVolumeClaim:
+    #  claimName: {{.Release.Name }}
+
+

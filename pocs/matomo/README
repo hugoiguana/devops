@@ -1,0 +1,47 @@
+
+# Kind - Cluster k8s:
+kind create cluster --config kind.yml --name matomo
+kind delete cluster --name matomo
+kind get clusters
+kind get nodes
+kubectl get nodes
+docker ps | grep kind
+cat ~/.kube/conf
+
+
+# Docker:
+docker ps | grep matomo
+
+# Kubernetes config:
+kubectl config get-contexts
+kubectl config use-context kind-matomo
+
+
+# Install apps:
+chmod 777 install-apps.sh
+./install-apps.sh
+
+
+# Helm:
+helm list
+helm uninstall matomo
+
+
+# Steps:
+  kind create cluster --config kind.yml --name matomo
+  helm install matomo ./matomo-chart
+  helm upgrade matomo ./matomo-chart
+  kubectl get pods
+  kubectl get svc
+  kubectl describe pods -n default $(kubectl get pod -n default -l app=matomo -o jsonpath="{.items[0].metadata.name}")
+  kubectl logs -n default $(kubectl get pod -n default -l app=matomo -o jsonpath="{.items[0].metadata.name}")
+  kubectl get pvc -n default | grep matomo
+  kubectl get pv -n default | grep matomo
+  kubectl describe pvc matomo
+
+
+
+
+
+
+
