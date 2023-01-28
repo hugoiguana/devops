@@ -1,0 +1,37 @@
+
+
+# Kind - Cluster k8s:
+kind create cluster --config kind.yml --name execute-sql-postgres
+kind delete cluster --name execute-sql-postgres
+kind get clusters
+kind get nodes
+kubectl get nodes
+docker ps | grep kind
+cat ~/.kube/conf
+
+
+# Docker:
+docker ps | grep execute-sql-postgres
+
+# Kubernetes config:
+kubectl config get-contexts
+kubectl config use-context kind-execute-sql-postgres
+
+
+# Install apps:
+chmod 777 install-apps.sh
+./install-apps.sh
+
+
+
+# Kubectl commands used:
+  ./install-apps.sh
+  ./create-new-user-on-db.sh
+  kubectl get service -n postgres
+  kubectl get pods -n postgres --watch
+  kubectl port-forward svc/postgres -n postgres 5432:5432
+  sudo kill -9 $(sudo lsof -t -i:5432)
+  kubectl describe pod -n postgres $(kubectl get pod -n postgres -l app=postgres -o jsonpath="{.items[0].metadata.name}")
+  kubectl logs -n postgres $(kubectl get pod -n postgres -l app=postgres -o jsonpath="{.items[0].metadata.name}")
+  kubectl get pvc -n postgres
+  kubectl get pv -n postgres

@@ -1,0 +1,15 @@
+
+namespace: postgres
+service:
+  name: "http"
+  #type: ClusterIP
+  type: NodePort
+  port: 5432
+  nodePort: 30950
+
+postgres:
+  replicas: 1
+  image: "postgres:10.1"
+  imagePullPolicy: "IfNotPresent"
+  containerPort: 5432
+
