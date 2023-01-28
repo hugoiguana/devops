@@ -1,0 +1,54 @@
+
+https://argo-cd.readthedocs.io/en/stable/getting_started/
+https://doc.traefik.io/traefik/getting-started/install-traefik/
+
+
+# Kind - Cluster k8s:
+kind create cluster --config kind.yml --name helm-postgres1
+kind delete cluster --name helm-postgres1
+kind get clusters
+kind get nodes
+kubectl get nodes
+docker ps | grep kind
+cat ~/.kube/conf
+
+
+# Docker:
+docker ps | grep helm-postgres1
+
+# Kubernetes config:
+kubectl config get-contexts
+kubectl config use-context kind-helm-postgres1
+
+
+# Install apps:
+chmod 777 install-apps.sh
+./install-apps.sh
+
+
+
+# Steps:
+  ./install-apps.sh
+  kubectl get service -n postgres
+  kubectl get pods -n postgres --watch
+  kubectl port-forward svc/postgres -n postgres 5432:5432
+  sudo kill -9 $(sudo lsof -t -i:5432)
+  kubectl describe pod -n postgres $(kubectl get pod -n postgres -l app=postgres -o jsonpath="{.items[0].metadata.name}")
+  kubectl logs -n postgres $(kubectl get pod -n postgres -l app=postgres -o jsonpath="{.items[0].metadata.name}")
+  kubectl get pvc -n postgres
+  kubectl get pv -n postgres
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
