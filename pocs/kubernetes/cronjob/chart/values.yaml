@@ -1,0 +1,5 @@
+logrotate:
+  image: busybox:1.28
+  schedule: "*/1 * * * *" # Run in every 1 minute
+  #schedule: "*/5 * * * *" # Run in every 5 minute
+  concurrencyPolicy: Forbid

@@ -1,0 +1,28 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: {{.Release.Name }}
+spec:
+  schedule: '{{.Values.logrotate.schedule }}'
+  concurrencyPolicy: {{.Values.logrotate.concurrencyPolicy }}
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+          - name: {{ .Release.Name }}
+            image: {{ .Values.logrotate.image }}
+            command: [sh, -c]
+            args:
+              - >-
+                echo Install CURL before init the first container.
+                echo "teste" > /etc/logrotate.d/test.txt
+                cat /etc/logrotate.d/test.txt
+            volumeMounts:
+            - name: host-root
+              mountPath: /etc/logrotate.d
+          volumes:
+          - name: host-root
+            hostPath:
+              path: /etc/logrotate.d
