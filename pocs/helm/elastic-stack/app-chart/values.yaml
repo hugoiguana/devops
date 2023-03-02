@@ -1,0 +1,8 @@
+
+namespace: app
+
+app:
+  replicas: 1
+  image: "busybox:1.28"
+  imagePullPolicy: "IfNotPresent"
+

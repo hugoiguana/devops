@@ -1,0 +1,73 @@
+
+
+# Kind - Cluster k8s:
+kind create cluster --config kind.yml --name helm-elastic-stack
+kind delete cluster --name helm-elastic-stack
+kind get clusters
+kind get nodes
+kubectl get nodes
+docker ps | grep kind
+cat ~/.kube/conf
+
+
+# Docker:
+docker ps | grep helm-elastic-stack
+
+# Kubernetes config:
+kubectl config get-contexts
+kubectl config use-context kind-helm-elastic-stack
+
+
+# Install apps:
+chmod 777 install-apps.sh
+./install-apps.sh
+
+
+
+# Steps:
+  ./install-apps.sh
+kubectl run cassandra-run --rm --tty -i --restart='Never' --namespace database --image cassandra --env="CQLSH_HOST=cassandra-chart" --command -- cqlsh cassandra-chart -u admin -p admin123
+kubectl run cassandra-run --rm --tty -i --restart='Never' --namespace app --image cassandra --env="CQLSH_HOST=cassandra-chart.database" --command -- cqlsh cassandra-chart.database -u admin -p admin123
+kubectl run cassandra-run --rm --tty -i --restart='Never' --namespace app --image cassandra --env="CQLSH_HOST=cassandra-chart.database" --command -- cqlsh cassandra-chart.database -u appuser -p test1234
+
+
+
+
+  kubectl get service -n cassandra
+  kubectl get pods -n cassandra --watch
+  kubectl port-forward svc/cassandra -n database 9042:9042
+  sudo kill -9 $(sudo lsof -t -i:9042)
+
+
+  kubectl describe pod -n cassandra $(kubectl get pod -n database -l app=cassandra -o jsonpath="{.items[0].metadata.name}")
+  kubectl logs -n cassandra $(kubectl get pod -n database -l app=cassandra -o jsonpath="{.items[0].metadata.name}")
+  kubectl get pvc -n cassandra
+  kubectl get pv -n cassandra
+
+
+# CQLSH commands:
+CREATE KEYSPACE appSpace WITH replication = {'class':'SimpleStrategy', 'replication_factor' : 1};
+SELECT * FROM system_schema.keyspaces;
+use appSpace;
+CREATE USER appuser WITH PASSWORD 'test1234';
+GRANT ALL ON KEYSPACE appSpace TO 'appuser';
+GRANT CREATE, ALTER, MODIFY, EXECUTE, SELECT ON KEYSPACE appSpace TO 'appuser';
+
+list users;
+describe tables;
+describe types;
+SELECT * FROM appSpace.auditdata;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
