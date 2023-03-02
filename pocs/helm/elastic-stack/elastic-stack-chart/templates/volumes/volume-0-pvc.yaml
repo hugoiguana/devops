@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: elasticsearch-master-elasticsearch-master-0
+  labels:
+    app: {{.Release.Name }}
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{.Values.elasticsearch.volumeClaimTemplate.resources.requests.storage}}
+  volumeName:  elasticsearch-0
