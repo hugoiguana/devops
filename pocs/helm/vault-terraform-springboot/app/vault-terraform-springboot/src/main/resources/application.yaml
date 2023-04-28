@@ -1,4 +1,8 @@
 
+
+terraform:
+    file: ${TERRAFORM_EXEC_FILE:terraform/terraform.sh}
+
 server:
   port: ${PORT:8080}
   servlet:

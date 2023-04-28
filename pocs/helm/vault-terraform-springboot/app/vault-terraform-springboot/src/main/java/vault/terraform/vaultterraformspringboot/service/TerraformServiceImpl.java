@@ -1,39 +1,49 @@
 package vault.terraform.vaultterraformspringboot.service;
 
 import lombok.SneakyThrows;
+import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 @Service
+@Slf4j
 public class TerraformServiceImpl implements TerraformService {
+
+    @Value("${terraform.file}")
+    String terraformFile;
 
     @Override
     @SneakyThrows
-    public void initTerraform() {
+    public void execTerraform() {
 
-        String homeDirectory = System.getProperty("user.home");
-        //Process process = Runtime.getRuntime().exec(String.format("/bin/sh -c ls %s", homeDirectory));
-        Process process = Runtime.getRuntime().exec("/bin/sh -c ./terraform.sh");
+        log.info("Init exec {}", terraformFile);
 
-        //StreamGobbler streamGobbler = new StreamGobbler(process.getInputStream(), System.out::println);
-        StreamGobbler streamGobbler = StreamGobbler.builder()
-                .inputStream(process.getInputStream())
-                .consumer(System.out::println)
-                .build();
+        ProcessBuilder processBuilder = new ProcessBuilder();
+        processBuilder.command(terraformFile);
 
-        Future<?> future = Executors.newSingleThreadExecutor().submit(streamGobbler);
+        Process process = processBuilder.start();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
 
-        int exitCode = process.waitFor();
-        assert exitCode == 0;
+        String line;
+        while ((line = reader.readLine()) != null) {
+            log.info(line);
+        }
 
-        future.get(); // waits for streamGobbler to finish
-    }
+        int exitVal = process.waitFor();
+        if (exitVal == 0) {
+            log.info("Terraform executed");
+        } else {
+            log.info("Terraform executed with error");
+        }
 
-    @Override
-    public void applyTerraform() {
-
+        log.info("End exec {} .", terraformFile);
     }
 }

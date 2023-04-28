@@ -16,8 +16,7 @@ public class TerraformController {
 
     @PostMapping
     public Mono<Void> getEmployeeById() {
-        service.initTerraform();
-        service.applyTerraform();
+        service.execTerraform();
         return Mono.empty();
     }
 

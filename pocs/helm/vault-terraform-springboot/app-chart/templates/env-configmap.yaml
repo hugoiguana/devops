@@ -7,3 +7,4 @@ metadata:
 data:
   PORT: "8081"
   CONTEXT_PATH: "/"
+  TERRAFORM_EXEC_FILE: "/terraform/terraform.sh"

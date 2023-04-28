@@ -1,1 +1,11 @@
 /docker/nexus/volumes
+
+pocs/helm/cassandra/cassandra-chart/charts
+Chart.lock
+
+pocs/helm/elastic-stack/elastic-stack-chart/charts
+
+.idea
+.terraform
+.terraform.lock*
+terraform.tfstate
