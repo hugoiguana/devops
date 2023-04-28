@@ -1,0 +1,9 @@
+
+
+vault:
+  server:
+    dev:
+      enabled: true
+      devRootToken: "root"
+  ui:
+    enabled: true

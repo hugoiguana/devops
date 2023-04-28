@@ -1,0 +1,10 @@
+apiVersion: v2
+name: vault-terraform-springboot
+description: A Helm chart for demostrate use of a springboot application running a Terraform and Vault.
+type: application
+version: 1.0.0
+appVersion: 1.13.1
+dependencies:
+- name: vault
+  repository: https://helm.releases.hashicorp.com
+  version: 0.24.1
