@@ -1,0 +1,22 @@
+
+
+terraform:
+  configMap:
+    name: terraform-configmap
+
+app:
+  replicas: 1
+  image: 
+    repository: "hugoiguana/vault-terraform-springboot"
+    tag: "0.0.5"
+  imagePullPolicy: "IfNotPresent"
+  containerPort: 8081
+  secrets:
+    vaultAddr: "http://vault.vault:8200"
+    vaultToken: "root"
+  service:
+    name: "http"
+    #type: ClusterIP
+    type: NodePort
+    port: 8081
+    nodePort: 30950

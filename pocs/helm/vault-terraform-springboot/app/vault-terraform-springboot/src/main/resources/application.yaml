@@ -1,0 +1,9 @@
+
+server:
+  port: ${PORT:8080}
+  servlet:
+    context-path: ${CONTEXT_PATH:/}
+
+spring:
+  application:
+    name: vault-terraform-springboot

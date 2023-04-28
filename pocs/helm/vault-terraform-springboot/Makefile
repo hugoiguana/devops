@@ -7,6 +7,7 @@ install-cluster:
 uninstall-cluster:
 	kind delete cluster --name helm-vault-terraform-springboot	
 
+
 install-vault:
 	kubectl create namespace vault
 	helm dependency build ./vault-chart
@@ -21,3 +22,19 @@ port-forward-vault-ui:
 kill-port-forward-vault:
 	sudo kill -9 $(sudo lsof -t -i:8200)
 	sudo kill -9 $(sudo lsof -t -i:8201)
+
+app-install:
+	kubectl create namespace app
+	helm install app ./app-chart -n app
+app-upgrade:
+	helm upgrade app ./app-chart -n app
+app-describe:
+	kubectl describe pod -n app $(kubectl get pod -n app -l app=app -o jsonpath="{.items[0].metadata.name}")	
+app-log:
+	kubectl logs -n app $(kubectl get pod -n app -l app=app -o jsonpath="{.items[0].metadata.name}") -f
+app-bash:
+	kubectl exec -n app $(kubectl get pod -n app -l app=app -o jsonpath="{.items[0].metadata.name}") -it /bin/bash
+
+
+execute-terraform:
+	curl -X POST http://localhost:8081/terraform

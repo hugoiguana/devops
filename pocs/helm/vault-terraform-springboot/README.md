@@ -47,6 +47,10 @@ chmod 777 install-apps.sh
   make port-forward-vault-ui
   kubectl exec -n vault vault-0 vault status
   kubectl exec -n vault vault-0 --stdin --tty sh
+  make app-install
+  kubectl get all -n app
+  make app-describe
+  make app-log
 ```
 
 ## Kubernetes commands:
@@ -61,6 +65,17 @@ vault status
 vault kv put -mount=secret hello foo=world
 ```
   
+## APP:
+```
+curl -X POST http://localhost:8081/terraform
+./mvnw clean package
+echo PASSWORD | docker login -u hugoiguana --password-stdin
+docker build -t hugoiguana/vault-terraform-springboot:0.0.1 .
+docker push hugoiguana/vault-terraform-springboot:0.0.1
+docker images | grep vault-terraform-springboot
+kubectl exec -n app $(kubectl get pod -n app -l app=app -o jsonpath="{.items[0].metadata.name}") -it /bin/bash
+```
+
 
 
 

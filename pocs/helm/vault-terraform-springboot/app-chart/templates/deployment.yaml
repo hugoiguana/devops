@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{.Release.Name }}
+  #namespace: {{ .Values.namespace }}
+  labels:
+    app: {{.Release.Name }}  
+spec:
+  replicas: {{ .Values.app.replicas }}
+  selector:
+    matchLabels:
+      app: {{.Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{.Release.Name }}
+    spec:
+      containers:
+        - name: {{.Release.Name }}
+          image: {{ .Values.app.image.repository }}:{{ .Values.app.image.tag }}
+          imagePullPolicy: {{ .Values.app.imagePullPolicy }}
+          ports:
+            - containerPort: {{ .Values.app.containerPort }}
+          env:
+            - name: VAULT_ADDR
+              valueFrom:
+                secretKeyRef:
+                  key: vault-url
+                  name: {{.Release.Name }}
+            - name: VAULT_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  key: vault-token
+                  name: {{.Release.Name }}
+          envFrom:
+            - configMapRef:
+                name: {{.Release.Name }}-env
+          volumeMounts:
+            - name: terraform-volume
+              mountPath: /terraform
+            - name: {{.Values.terraform.configMap.name }}
+              mountPath: /terraform/main.tf
+              subPath: main.tf
+            - name: {{.Values.terraform.configMap.name }}
+              mountPath: /terraform/terraform.sh
+              subPath: terraform.sh
+      volumes:
+        - name: terraform-volume
+          emptyDir: {}
+        - name: {{.Values.terraform.configMap.name }}
+          configMap:
+            name: {{.Values.terraform.configMap.name }}
+            defaultMode: 0777

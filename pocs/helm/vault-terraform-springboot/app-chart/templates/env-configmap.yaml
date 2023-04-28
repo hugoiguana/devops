@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{.Release.Name }}-env
+  labels:
+    app: {{.Release.Name }}
+data:
+  PORT: "8081"
+  CONTEXT_PATH: "/"
