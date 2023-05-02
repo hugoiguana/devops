@@ -39,6 +39,12 @@ spec:
             - name: terraform-volume
               mountPath: /terraform
             - name: {{.Values.terraform.configMap.name }}
+              mountPath: /terraform/providers.tf
+              subPath: providers.tf
+            - name: {{.Values.terraform.configMap.name }}
+              mountPath: /terraform/variables.tf
+              subPath: variables.tf
+            - name: {{.Values.terraform.configMap.name }}
               mountPath: /terraform/main.tf
               subPath: main.tf
             - name: {{.Values.terraform.configMap.name }}

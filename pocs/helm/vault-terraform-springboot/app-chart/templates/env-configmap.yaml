@@ -8,3 +8,7 @@ data:
   PORT: "8081"
   CONTEXT_PATH: "/"
   TERRAFORM_EXEC_FILE: "/terraform/terraform.sh"
+  TF_VAR_vault_secret_path: "dev/database/app"
+  TF_VAR_db_name: "test"
+  TF_VAR_db_username: "root"
+  TF_VAR_db_password: "root123"
