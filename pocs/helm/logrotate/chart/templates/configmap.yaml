@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{.Release.Name }}
+data:
+  my_logs: |
+    /var/lib/docker/containers/*/*.log {
+        daily
+        missingok
+        rotate 10
+        notifempty
+        dateformat -%Y%m%d_%H%M%S
+        su
+        size 50M
+    }
+
+
+

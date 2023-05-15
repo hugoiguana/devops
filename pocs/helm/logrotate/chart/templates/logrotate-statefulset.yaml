@@ -1,0 +1,104 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: {{.Release.Name }}
+spec:
+  selector:
+     matchLabels:
+      app: {{.Release.Name }}
+  template:
+    metadata:
+      name: {{.Release.Name }}
+      labels:
+        app: {{.Release.Name }}
+    spec:
+     # tolerations:
+     # - effect: NoSchedule
+     #   operator: Exists
+      
+    # these tolerations are to have the daemonset runnable on control plane nodes
+    # remove them if your control plane nodes should not run pods
+    #- key: node-role.kubernetes.io/control-plane
+    #operator: Exists
+    #effect: NoSchedule
+    #- key: node-role.kubernetes.io/master
+      containers:
+      - name: {{ .Release.Name }}
+        image: {{ .Values.logrotate.image }}
+        command: [sh, -c]
+        args:
+          - >-
+            echo Config logrotate below: &&
+            echo "/var/lib/docker/containers/*/*.log {
+                  daily
+                  missingok
+                  rotate 4
+                  notifempty
+                  dateformat -%Y%m%d_%H%M%S
+                  su
+                  size 1M
+              }
+                /var/log/*.log {
+                  daily
+                  missingok
+                  rotate 4
+                  notifempty
+                  dateformat -%Y%m%d_%H%M%S
+                  su
+                  size 1M
+              }
+                /var/log/containers/*.log {
+                  daily
+                  missingok
+                  rotate 4
+                  notifempty
+                  dateformat -%Y%m%d_%H%M%S
+                  su
+                  size 1M
+                }
+                var/log/pods/*/*/*.log {
+                  daily
+                  missingok
+                  rotate 4
+                  notifempty
+                  dateformat -%Y%m%d_%H%M%S
+                  su
+                  size 1M
+                }" > /etc/logrotate.d/my_logrotate &&
+            cat /etc/logrotate.d/my_logrotate
+        volumeMounts:
+        - name: host-root
+          mountPath: /etc/logrotate.d
+        #- name: logrotate-config
+        #  mountPath: /etc/logrotate.d/my_logs
+        #  subPath: my_logs
+        resources:
+          limits:
+            cpu: 200m
+            memory: 300Mi
+          requests:
+            cpu: 100m
+            memory: 200Mi
+      volumes:
+      - name: host-root
+        hostPath:
+          path: /etc/logrotate.d
+      #- name: logrotate-config
+      #  configMap:
+      #    name: {{.Release.Name }}
+      #    items:
+      #    - key: my_logs
+      #      path: my_logs
+
+192.168.0.135 17m  1%
+192.168.0.152 231d 14%
+192.168.0.179 75d  2%
+192.168.0.197 40d  X
+192.168.0.217 231d X
+192.168.0.35  231d X
+192.168.0.51  17m  X 
+192.168.0.52  231d X
+192.168.0.53  75d X 
+192.168.0.71  46d X
+192.168.0.83  75d X
+192.168.0.98  231d 65%
