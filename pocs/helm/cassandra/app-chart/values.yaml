@@ -1,0 +1,15 @@
+
+namespace: app
+service:
+  name: "http"
+  #type: ClusterIP
+  type: NodePort
+  port: 8080
+  nodePort: 30950
+
+app:
+  replicas: 1
+  image: "postgres:10.1"
+  imagePullPolicy: "IfNotPresent"
+  containerPort: 8080
+

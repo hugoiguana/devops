@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: data-{{ .Release.Name }}-0
+  labels:
+    app: {{.Release.Name }}
+spec:
+  storageClassName: manual
+  accessModes:
+    - {{.Values.volume.accessModes}}
+  resources:
+    requests:
+      storage: {{.Values.cassandra.persistence.size}}
+  volumeName:  data-{{ .Release.Name }}-0

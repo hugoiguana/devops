@@ -1,0 +1,27 @@
+namespace: cassandra
+
+service:
+  name: "http"
+  #type: ClusterIP
+  type: NodePort
+  port: 9042
+  nodePort: 30950
+
+cassandra:
+  replicaCount: 1
+  service:
+    type: ClusterIP
+    ports:
+      cql: 9042
+      metrics: 8080
+  persistence:
+    enabled: true
+    storageClass: ""
+    accessModes: ["ReadWriteOnce"]
+    size: 5Gi
+  dbUser:
+    user: admin
+    forcePassword: false
+    password: "admin123"
+volume:
+  accessModes: "ReadWriteOnce"
