@@ -1,0 +1,65 @@
+
+https://docs.clamav.net/Introduction.html
+https://artifacthub.io/packages/helm/wiremind/clamav
+https://github.com/wiremind/wiremind-helm-charts/blob/main/charts/clamav/values.yaml
+
+
+# Kind - Cluster k8s:
+kind create cluster --config kind.yml --name helm-clamav-antivirus
+kind delete cluster --name helm-clamav-antivirus
+kind get clusters
+kind get nodes
+kubectl get nodes
+docker ps | grep kind
+cat ~/.kube/conf
+
+
+# Docker:
+docker ps | grep helm-clamav-antivirus
+
+# Kubernetes config:
+kubectl config get-contexts
+kubectl config use-context kind-helm-clamav-antivirus
+
+
+# Install apps:
+make install-cluster
+make install-apps
+make upgrade-apps
+
+
+# Docker:
+docker login
+docker build -t hugoiguana/clamav:1.1.0 . -f Dockerfile.clamav
+docker images | grep hugoiguana/clamav
+docker image rm hugoiguana/clamav:1.1.0
+docker push hugoiguana/clamav:1.1.0
+docker pull hugoiguana/clamav:1.1.0
+docker run --interactive --tty --rm --name "clam_container_01" hugoiguana/clamav:1.1.5
+
+# Kubernetes commands:
+kubectl get service -n clamav
+kubectl get pods -n clamav
+kubectl get pods -n clamav --watch
+kubectl get pods -n clamav -w
+kubectl delete po -n clamav clamav-antivirus-chart-0
+
+kubectl port-forward svc/clamav -n clamav 9042:9042
+sudo kill -9 $(sudo lsof -t -i:9042)
+
+kubectl describe statefulset -n clamav clamav-antivirus-chart
+kubectl describe pod -n clamav clamav-antivirus-chart-0
+kubectl logs -n clamav clamav-antivirus-chart-0
+kubectl get pvc -n clamav
+kubectl get pv -n clamav
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ .Chart.Name }}
+  labels:
+    app: {{ .Chart.Name }}  
+spec:
+  replicas: {{ .Values.clamav.replicaCount }}
+  serviceName: {{ .Chart.Name }}
+  selector:
+    matchLabels:
+      app: {{ .Chart.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Chart.Name }}
+    spec:
+      securityContext:
+        runAsUser: 2000
+        runAsGroup: 2000
+        #fsGroup: 2000
+      containers:
+        - name: {{ .Chart.Name }}
+          #image: {{ .Values.clamav.repository }}:{{ .Values.clamav.tag }}
+          #image: "{{ .Values.clamav.repository }}:{{ .Values.clamav.tag | default .Chart.AppVersion }}"
+          image: "hugoiguana/clamav:1.1.11"
+          imagePullPolicy: {{ .Values.clamav.pullPolicy }}
+          ports:
+            - name: clamavport
+              containerPort: 3310
+              protocol: TCP
+          startupProbe:
+            initialDelaySeconds: {{ .Values.clamav.startupProbe.initialDelaySeconds }}
+            failureThreshold: {{ .Values.clamav.startupProbe.failureThreshold }}
+            periodSeconds: {{ .Values.clamav.startupProbe.periodSeconds }}
+            tcpSocket:
+              port: clamavport
+            timeoutSeconds: {{ .Values.clamav.startupProbe.timeoutSeconds }}
+          livenessProbe:
+            initialDelaySeconds: {{ .Values.clamav.livenessProbe.initialDelaySeconds }}
+            failureThreshold: {{ .Values.clamav.livenessProbe.failureThreshold }}
+            periodSeconds: {{ .Values.clamav.livenessProbe.periodSeconds }}
+            tcpSocket:
+              port: clamavport
+            timeoutSeconds: {{ .Values.clamav.livenessProbe.timeoutSeconds }}
+          readinessProbe:
+            initialDelaySeconds: {{ .Values.clamav.readinessProbe.initialDelaySeconds }}
+            failureThreshold: {{ .Values.clamav.readinessProbe.failureThreshold }}
+            periodSeconds: {{ .Values.clamav.readinessProbe.periodSeconds }}
+            tcpSocket:
+              port: clamavport
+            timeoutSeconds: {{ .Values.clamav.readinessProbe.timeoutSeconds }}
+          resources:
+            {{- toYaml .Values.clamav.resources | nindent 12 }}
+          volumeMounts:
+            - name: freshclam-config-volume
+              mountPath: /etc/clamav/freshclam.conf
+              subPath: freshclam.conf
+            - name: clamd-config-volume
+              mountPath: /etc/clamav/clamd.conf
+              subPath: clamd.conf
+{{ toYaml .Values.clamav.volumeMounts | indent 12 }}
+      volumes:
+        - name: freshclam-config-volume
+          configMap:
+            name: {{ .Chart.Name }}-freshclam
+        - name: clamd-config-volume
+          configMap:
+            name: {{ .Chart.Name }}-clamd
+{{ toYaml .Values.clamav.volumes | indent 8 }}

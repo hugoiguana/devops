@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{.Release.Name }}
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: {{.Release.Name }}  
+spec:
+  replicas: {{ .Values.clamav.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{.Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{.Release.Name }}
+    spec:
+      #securityContext:
+        #runAsUser: 2000
+        #runAsGroup: 2000
+        #fsGroup: 2000
+      containers:
+        - name: {{.Release.Name }}
+          #image: {{ .Values.clamav.repository }}:{{ .Values.clamav.tag }}
+          image: "hugoiguana/clamav:1.1.11"
+          imagePullPolicy: {{ .Values.clamav.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.clamav.containerPort }}
+          volumeMounts:
+{{ toYaml .Values.clamav.extraVolumeMounts | indent 12 }}
+      volumes:
+{{ toYaml .Values.clamav.extraVolumes | indent 8 }}

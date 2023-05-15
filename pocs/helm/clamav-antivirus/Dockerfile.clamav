@@ -1,0 +1,30 @@
+FROM clamav/clamav:1.1.0
+
+#USER root
+#RUN mkdir /var/run/clamav /run/lock && \
+#    chown clamav:clamav /var/run/clamav /run/clamav /var/log/clamav /var/lock /run/lock && \
+#    chmod 770 /var/run/clamav /run/clamav /var/log/clamav /var/lock /run/lock
+
+#RUN mkdir -p /run/clamav
+#RUN chmod 770 /run/clamav
+
+#RUN mkdir -p /var/run/clamav
+#RUN mkdir -p /var/lib/clamav
+#RUN mkdir -p /run/lock
+#RUN mkdir -p /var/lock
+#RUN chown -R clamav:clamav /var/run/clamav 
+#RUN chown -R clamav:clamav /var/lib/clamav
+#RUN chown -R clamav:clamav /run/lock
+#RUN chown -R clamav:clamav /var/lock
+#RUN chmod -R 770 /var/run/clamav
+#RUN chmod -R 770 /var/lib/clamav
+#RUN chmod -R 770 /run/lock
+#RUN chmod -R 770 /var/lock
+
+# volume provision
+#VOLUME ["/var/lib/clamav"]
+#RUN apk add shadow
+#RUN usermod -u 2000 clamav
+#USER 2000
+#USER clamav
+#USER root

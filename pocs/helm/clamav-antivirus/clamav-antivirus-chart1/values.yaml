@@ -1,0 +1,70 @@
+
+clamav:
+  containerPort: 3310
+
+
+  replicaCount: 1
+  image:
+    repository: hugoiguana/clamav
+    tag: 1.1.11
+    pullPolicy: IfNotPresent
+    #pullPolicy: Always
+  service:
+    type: ClusterIP
+    port: 3310
+  # podSecurityContext:
+  #   runAsNonRoot: false
+  #   runAsUser: 2000
+  #   runAsGroup: 2000
+  securityContext:
+    runAsUser: 2000
+    runAsGroup: 2000
+
+  #resources: {}
+  resources: 
+    limits:
+      cpu: 1000m
+      memory: 500Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+  hpa:
+    enabled: false
+
+
+
+  persistentVolume:
+    enabled: true
+    annotations: {}
+    accessModes:
+    - ReadWriteOnce
+    size: 100Mi
+    storageClass: ""
+
+  extraVolumes:
+     - name: volume-var-lib
+       emptyDir: {}
+    #  - name: volume-var-run
+    #    emptyDir: {}
+    #  - name: volume-run-lock
+    #    emptyDir: {}
+    #  - name: volume-var-lock
+    #    emptyDir: {}
+  extraVolumeMounts:
+    - name: volume-var-lib
+      mountPath: /var/lib/clamav
+    # - name: volume-var-run
+    #   mountPath: /var/run/clamav
+    # - name: volume-run-lock
+    #   mountPath: /run/lock
+    # - name: volume-var-lock
+    #   mountPath: /var/lock/lock
+
+
+  #extraVolumes:
+  #   - name: clamav-volume-lib
+  #     persistentVolumeClaim:
+  #       claimName: clamav-volume-lib-pvc
+  # extraVolumeMounts:
+  #   - name: clamav-volume-lib
+  #     mountPath: /var/lib/clamav
