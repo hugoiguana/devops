@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Chart.Name }}-cleanup
+data:
+  cleanup.sh: |
+{{.Values.cleanup | indent 4}}

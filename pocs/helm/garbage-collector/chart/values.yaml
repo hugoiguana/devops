@@ -1,0 +1,53 @@
+garbageCollector:
+  image: docker
+
+
+cleanup: |
+    #!/bin/sh
+
+    EXITED_CONTAINERS=$(docker ps -q -f status=exited)
+    DANGLING_VOLUMES=$(docker volume ls -qf dangling=true)
+    DANGLING_IMAGES=$(docker images --filter "dangling=true" -q --no-trunc)
+
+    if [ -n "${EXITED_CONTAINERS}" ]; then
+      echo "Cleaning up exited containers..."
+      docker rm ${EXITED_CONTAINERS}
+      echo "DONE!"
+    fi
+
+    if [ -n "${DANGLING_VOLUMES}" ]; then
+      echo "Cleaning up dangling volumes..."
+      docker volume rm "${DANGLING_VOLUMES}"
+      echo "DONE!"
+    fi
+
+    if [ -n "${DANGLING_IMAGES}" ]; then
+      echo "Cleaning up dangling images..."
+      docker rmi "${DANGLING_IMAGES}"
+      echo "DONE!"
+    fi
+
+    DOCKER_CONTAINERS_LOG_PATH="/var/lib/docker/containers"
+    echo "Clean containers Logs on path: $DOCKER_CONTAINERS_LOG_PATH"
+    ls $DOCKER_CONTAINERS_LOG_PATH
+    for dir in  $DOCKER_CONTAINERS_LOG_PATH/*; do
+        if [ -d $dir ];
+        then
+            PATH_DIR=$(basename "$dir")
+            echo "Cleaning logs for container: $PATH_DIR"
+            echo "Log files before deleted:"
+            ls -l $DOCKER_CONTAINERS_LOG_PATH/$PATH_DIR
+            echo "Cleaning logs:"
+            rm -f $DOCKER_CONTAINERS_LOG_PATH/$PATH_DIR/$PATH_DIR-json.log.*
+            echo "Log files after deleted:"
+            ls -l $DOCKER_CONTAINERS_LOG_PATH/$PATH_DIR
+        fi
+    done
+    echo "Containers logs size - general Info:"
+    du -shc $DOCKER_CONTAINERS_LOG_PATH/*
+
+    echo "DONE!"
+    echo "Cleanup is completed!"
+    sleep 5
+    exit "0" || return "0"
+

@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: {{.Chart.Name }}
+spec:
+  selector:
+     matchLabels:
+      app: {{.Chart.Name }}
+  template:
+    metadata:
+      name: {{.Chart.Name }}
+      labels:
+        app: {{.Chart.Name }}
+    spec:
+      hostNetwork: false
+      hostPID: true
+      containers:
+      - name: {{ .Chart.Name }}
+        image: {{ .Values.garbageCollector.image }}
+        imagePullPolicy: Always
+        securityContext:
+          privileged: true
+        command: [sh, -c]
+        args: [ "while true; do sleep 30; done;" ]
+        # command: [sh, -c]
+        # args:
+        #   - >-
+        #     echo "It is running";
+        #     /opt/scripts/cleanup.sh;
+        #     #sleep 600;
+        #     while true; do sleep 30; done;
+        resources:
+          limits:
+            cpu: 200m
+            memory: 300Mi
+          requests:
+            cpu: 100m
+            memory: 200Mi
+        volumeMounts:
+          - name: {{.Chart.Name}}-cleanup-configmap
+            mountPath: /opt/scripts
+          - name: docker-sock
+            mountPath: /var/run/docker.sock
+            #readOnly: false
+          - name: docker-logs
+            mountPath: "/var/lib/docker/containers"
+      volumes:
+      - name: {{.Chart.Name}}-cleanup-configmap
+        configMap:
+          name: {{.Chart.Name}}-cleanup
+          defaultMode: 0755
+      - name: docker-sock
+        hostPath:
+          path: /var/run
+      - name: docker-logs
+        hostPath:
+          path: "/var/lib/docker/containers"

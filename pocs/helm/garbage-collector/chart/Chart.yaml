@@ -1,0 +1,6 @@
+apiVersion: v2
+description: Logrotate do controll Logs
+name: garbage-collector
+version: 1.0.0
+appVersion: 1.0.0
+

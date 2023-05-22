@@ -1,0 +1,31 @@
+
+
+# Kind - Cluster k8s:
+kind create cluster --config kind.yml --name helm-logrotate2
+kind delete cluster --name helm-logrotate2
+kind get clusters
+kind get nodes
+kubectl get nodes
+docker ps | grep kind
+cat ~/.kube/conf
+
+
+# Docker:
+docker ps | grep helm-logrotate2
+
+# Kubernetes config:
+kubectl config get-contexts
+kubectl config use-context kind-helm-logrotate2
+
+
+# Steps:
+  ./install-apps.sh
+
+
+  kubectl get daemonSet -n default 
+  kubectl get pods -n default -o wide
+  kubectl get pods -n default --watch
+  kubectl describe pod -n default $(kubectl get pod -n database -l app=logrotate -o jsonpath="{.items[0].metadata.name}")
+  kubectl logs -n default $(kubectl get pod -n database -l app=logrotate -o jsonpath="{.items[0].metadata.name}")
+  kubectl get pvc -n default
+  kubectl get pv -n default
