@@ -1,11 +1,11 @@
 
 
 install-cluster:
-	kind delete cluster --name helm-logrotate2
-	kind create cluster --config kind.yml --name helm-logrotate2
-	kubectl config use-context kind-helm-logrotate2
+	kind delete cluster --name helm-garbage-collector
+	kind create cluster --config kind.yml --name helm-garbage-collector
+	kubectl config use-context kind-helm-garbage-collector
 uninstall-cluster:
-	kind delete cluster --name kind-helm-logrotate2	
+	kind delete cluster --name kind-helm-garbage-collector	
 
 
 

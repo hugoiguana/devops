@@ -1,8 +1,8 @@
 
 
 # Kind - Cluster k8s:
-kind create cluster --config kind.yml --name helm-logrotate2
-kind delete cluster --name helm-logrotate2
+kind create cluster --config kind.yml --name helm-garbage-collector
+kind delete cluster --name helm-garbage-collector
 kind get clusters
 kind get nodes
 kubectl get nodes
@@ -11,11 +11,11 @@ cat ~/.kube/conf
 
 
 # Docker:
-docker ps | grep helm-logrotate2
+docker ps | grep helm-garbage-collector
 
 # Kubernetes config:
 kubectl config get-contexts
-kubectl config use-context kind-helm-logrotate2
+kubectl config use-context kind-helm-garbage-collector
 
 
 # Steps:
